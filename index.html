@@ -601,6 +601,26 @@
                     const mWidth = segResult.categoryMask.width;
                     const mHeight = segResult.categoryMask.height;
 
+                    // Hitung jumlah piksel yang terdeteksi sebagai pergelangan (nilai 1)
+                    let countSeg = 0;
+                    for (let i = 0; i < mask.length; i++) {
+                        if (mask[i] === 1) countSeg++;
+                    }
+
+                    // Tampilkan status di debugInfo jika mode debug aktif
+                    if (debugMode) {
+                        document.getElementById('debugInfo').innerHTML += `<div>Seg area: ${countSeg} px</div>`;
+                    }
+
+                    // Jika tidak ada area terdeteksi, fallback ke landmark
+                    if (countSeg === 0) {
+                        console.warn('⚠️ Segmentasi tidak mendeteksi area pergelangan, fallback ke landmark');
+                        if (debugMode) {
+                            document.getElementById('debugInfo').innerHTML += '<div style="color:orange;">⚠️ Seg area kosong, fallback</div>';
+                        }
+                        return;
+                    }
+
                     let sumX = 0, sumY = 0, count = 0;
                     let minX = mWidth, maxX = 0, minY = mHeight, maxY = 0;
                     let sumX2 = 0, sumY2 = 0, sumXY = 0;
