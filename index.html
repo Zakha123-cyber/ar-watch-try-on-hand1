@@ -415,8 +415,8 @@
 
             const stream = await navigator.mediaDevices.getUserMedia({
                 video: {
-                    width: 640,
-                    height: 480,
+                    width: 1280,
+                    height: 720,
                     facingMode: 'user'
                 }
             });
@@ -538,8 +538,8 @@
                         await hands.send({ image: video });
                     }
                 },
-                width: 640,
-                height: 480
+                width: 1280,
+                height: 720
             });
             cameraUtils.start();
 
@@ -703,6 +703,20 @@
                         const vecY = wristY - segCenterY;
                         center_x = wristX - 0.3 * vecX;
                         center_y = wristY - 0.3 * vecY;
+
+                        const uniqueValues = new Set(mask);
+                        let valuesStr = '';
+                        uniqueValues.forEach(v => valuesStr += v + ',');
+                        document.getElementById('debugInfo').innerHTML += `<div>Unique mask values: ${valuesStr}</div>`;
+
+                        // Jika ada nilai selain 0 dan 1, mungkin model mengeluarkan probabilitas bukan mask biner
+                        // Tampilkan juga min, max
+                        let minVal = 255, maxVal = 0;
+                        for (let i = 0; i < mask.length; i++) {
+                            if (mask[i] < minVal) minVal = mask[i];
+                            if (mask[i] > maxVal) maxVal = mask[i];
+                        }
+                        document.getElementById('debugInfo').innerHTML += `<div>Mask min: ${minVal}, max: ${maxVal}</div>`;
 
                         if (debugMode) {
                             const perpX = -vecY;
